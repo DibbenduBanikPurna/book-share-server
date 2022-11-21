@@ -1,5 +1,6 @@
 const express=require('express')
 const cors=require('cors')
+const ObjectId = require('mongodb').ObjectId
 
 const { MongoClient, ServerApiVersion } = require('mongodb');
 
@@ -59,6 +60,14 @@ async function run() {
              const result = await cursor.toArray()
              res.send(result)
        })
+
+
+       app.get('/bookdata/:id',async(req,res)=>{
+                console.log(req.params.id)
+    
+                 const result = await bookCollcetion.findOne({ _id: ObjectId(req.params.id) })
+                 res.send(result)
+             })
         
         //post user data
 
