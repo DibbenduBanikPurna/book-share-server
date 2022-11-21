@@ -1,6 +1,8 @@
 const express=require('express')
 const cors=require('cors')
 const ObjectId = require('mongodb').ObjectId
+const fileUpload = require('express-fileupload')
+
 
 const { MongoClient, ServerApiVersion } = require('mongodb');
 
@@ -11,7 +13,7 @@ const app=express();
 //middleware
 app.use(cors())
 app.use(express.json())
-//app.use(fileUpload())
+app.use(fileUpload())
 
 
 ////mongouri
@@ -49,10 +51,38 @@ async function run() {
             //post data data
 
        app.post('/books',async(req,res)=>{
-        console.log(req.body)
-        const result = await bookCollcetion.insertOne(req.body)
-             console.log(result)
-             res.json(result)
+         console.log(req.body)
+         console.log(req.files.image)
+        // const result = await bookCollcetion.insertOne(req.body)
+        //      console.log(result)
+        //      res.json(result)
+        const name = req.body.name;
+            const email = req.body.email;
+            const image = req?.files?.image;
+            const dept_name=req.body.dept_name;
+            const book=req.body.book;
+            const author_name=req.body.author_name
+            const book_title=req.body.book_title;
+            const publisherName=req.body.publisherName
+            const picData = image?.data;
+            const encodedPic = picData?.toString('base64')
+            const imageBuffer = Buffer.from(encodedPic, 'base64')
+            const bookInfo = {
+                name,
+                email,
+                dept_name,
+                book,
+                author_name,
+                book_title,
+                publisherName,
+                picData,
+
+                image: imageBuffer
+            }
+            const result = await bookCollcetion.insertOne(bookInfo);
+
+            console.log("result")
+            res.json(result)
        })
 
        app.get('/books', async(req,res)=>{
